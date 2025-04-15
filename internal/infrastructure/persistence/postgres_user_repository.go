@@ -50,7 +50,7 @@ func (r *PostgresUserRepository) FindByEmail(email string) (*domain.User, error)
 func (r *PostgresUserRepository) Get() ([]*domain.User, error) {
 	rows, err := r.db.Query(`
 		SELECT id, username, email, password, role, is_active
-		FROM users
+		FROM users ORDER BY id ASC
 	`)
 	if err != nil {
 		return nil, err

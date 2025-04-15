@@ -18,7 +18,7 @@ func main() {
 	defer container.DB.Close()
 
 	http.Handle("/register", middleware.LogRequests(http.HandlerFunc(container.UserHandler.Register)))
-
+	http.Handle("/users", middleware.LogRequests(http.HandlerFunc(container.UserHandler.Get)))
 	log.Println("🚀 Server running on http://localhost:8080")
 	err = http.ListenAndServe(":8080", nil)
 	if err != nil {

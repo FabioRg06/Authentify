@@ -16,3 +16,7 @@ func (s *UserService) Register(user *domain.User) error {
 
 	return s.repo.Save(user)
 }
+
+func (s *UserService) Get() ([]*domain.User, error) {
+	return s.repo.Get()
+}

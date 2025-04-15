@@ -30,3 +30,14 @@ func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 }
+
+func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
+	users, err := h.service.Get()
+	if err != nil {
+		http.Error(w, "Error fetching users", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
+}
