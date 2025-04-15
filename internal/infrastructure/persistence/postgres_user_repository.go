@@ -24,7 +24,9 @@ func (r *PostgresUserRepository) initSchema() {
 		email TEXT UNIQUE NOT NULL,
 		password TEXT NOT NULL,
 		role TEXT NOT NULL,
-		is_active BOOLEAN NOT NULL
+		is_active BOOLEAN NOT NULL DEFAULT true,
+		created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+		updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 	);`)
 	if err != nil {
 		log.Fatalf("❌ Failed to create users table: %v", err)
@@ -32,9 +34,9 @@ func (r *PostgresUserRepository) initSchema() {
 }
 func (r *PostgresUserRepository) Save(user *domain.User) error {
 	_, err := r.db.Exec(`
-		INSERT INTO users (username, email, password, role, is_active)
-		VALUES ($1, $2, $3, $4, $5)`,
-		user.Username, user.Email, user.Password, user.Role, true)
+		INSERT INTO users (username, email, password, role)
+		VALUES ($1, $2, $3, $4)`,
+		user.Username, user.Email, user.Password, user.Role)
 	return err
 }
 
@@ -49,7 +51,7 @@ func (r *PostgresUserRepository) FindByEmail(email string) (*domain.User, error)
 }
 func (r *PostgresUserRepository) Get() ([]*domain.User, error) {
 	rows, err := r.db.Query(`
-		SELECT id, username, email, password, role, is_active
+		SELECT id, username, email, password, role, is_active, created_at, updated_at
 		FROM users ORDER BY id ASC
 	`)
 	if err != nil {
@@ -60,7 +62,7 @@ func (r *PostgresUserRepository) Get() ([]*domain.User, error) {
 	var users []*domain.User
 	for rows.Next() {
 		var user domain.User
-		err := rows.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Role, &user.IsActive)
+		err := rows.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Role, &user.IsActive, &user.CreatedAt, &user.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
