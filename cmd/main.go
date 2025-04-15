@@ -6,6 +6,7 @@ import (
 
 	"github.com/FabioRg06/Authentify/internal/bootstrap"
 	"github.com/FabioRg06/Authentify/internal/config"
+	"github.com/FabioRg06/Authentify/internal/infrastructure/middleware"
 )
 
 func main() {
@@ -16,7 +17,7 @@ func main() {
 	}
 	defer container.DB.Close()
 
-	http.HandleFunc("/register", container.UserHandler.Register)
+	http.Handle("/register", middleware.LogRequests(http.HandlerFunc(container.UserHandler.Register)))
 
 	log.Println("🚀 Server running on http://localhost:8080")
 	err = http.ListenAndServe(":8080", nil)

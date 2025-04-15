@@ -47,3 +47,29 @@ func (r *PostgresUserRepository) FindByEmail(email string) (*domain.User, error)
 	}
 	return &user, nil
 }
+func (r *PostgresUserRepository) Get() ([]*domain.User, error) {
+	rows, err := r.db.Query(`
+		SELECT id, username, email, password, role, is_active
+		FROM users
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []*domain.User
+	for rows.Next() {
+		var user domain.User
+		err := rows.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Role, &user.IsActive)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, &user)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
