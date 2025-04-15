@@ -1,0 +1,23 @@
+# Go
+bin/
+*.exe
+*.out
+*.test
+
+# IDE
+.vscode/
+.idea/
+
+# System
+.DS_Store
+
+# Environment
+.env
+
+# Docker
+*.pid
+/tmp
+docker-compose.override.yml
+
+# Postgres Volumes
+pgdata/
